@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marshall Esports Betting | Valorant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar" id="home">
+      <div class="brand">
+        <div class="logo-mark">M</div>
+        <div>
+          <h1>Marshall Esports Betting</h1>
+          <p class="tag">VALORANT · FAKE MONEY LEAGUE</p>
+        </div>
+      </div>
+      <nav>
+        <a href="#matches">Matches</a>
+        <a href="#wallet">Wallet</a>
+        <a href="#slip">Bet Slip</a>
+        <a href="#history">History</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero card">
+        <div>
+          <h2>Bet on Valorant with virtual credits.</h2>
+          <p>
+            A single-page Marshall-themed betting experience for tournament-style
+            mock wagering. Track your fake wallet, place bets, and follow match
+            outcomes in real time.
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#matches">Start Betting</a>
+            <button class="btn" id="simulateRound">Simulate Next Round</button>
+          </div>
+        </div>
+        <div class="hero-badge">
+          <p>Available Balance</p>
+          <h3 id="balance">$10,000</h3>
+          <small>Virtual currency only</small>
+        </div>
+      </section>
+
+      <section class="grid two-col">
+        <article class="card" id="matches">
+          <div class="section-head">
+            <h3>Live Valorant Matches</h3>
+            <span class="pill">Bo3</span>
+          </div>
+          <div id="matchList" class="list"></div>
+        </article>
+
+        <article class="card" id="slip">
+          <div class="section-head">
+            <h3>Bet Slip</h3>
+            <span class="pill accent" id="slipCount">0 picks</span>
+          </div>
+          <form id="betForm">
+            <label for="stake">Stake (virtual $)</label>
+            <input id="stake" type="number" min="50" step="50" value="250" required />
+            <div id="slipItems" class="list compact"></div>
+            <button class="btn primary full" type="submit">Place Bet</button>
+          </form>
+        </article>
+      </section>
+
+      <section class="grid two-col" id="wallet">
+        <article class="card">
+          <div class="section-head">
+            <h3>Wallet</h3>
+            <span class="pill">Demo Mode</span>
+          </div>
+          <ul class="wallet-stats">
+            <li><span>Total bankroll</span><strong id="walletTotal">$10,000</strong></li>
+            <li><span>Pending bets</span><strong id="walletPending">$0</strong></li>
+            <li><span>Available</span><strong id="walletAvailable">$10,000</strong></li>
+          </ul>
+        </article>
+
+        <article class="card" id="history">
+          <div class="section-head">
+            <h3>Bet History</h3>
+            <button class="btn subtle" id="clearHistory" type="button">Clear</button>
+          </div>
+          <div id="historyList" class="list compact"></div>
+        </article>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        Marshall Esports Betting is a student project simulator. No real gambling,
+        no real currency, and no financial transactions.
+      </p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
