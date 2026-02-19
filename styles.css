@@ -1,0 +1,107 @@
+:root {
+  --bg: #080f08;
+  --panel: #101a10;
+  --panel-2: #132213;
+  --text: #e6f7e6;
+  --muted: #a3c9a3;
+  --green: #32d75c;
+  --green-2: #1eae44;
+  --danger: #ff5f5f;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "Barlow", sans-serif;
+  background: linear-gradient(180deg, #050905, var(--bg));
+  color: var(--text);
+}
+main { padding: 1rem 1rem 2rem 5.5rem; max-width: 1200px; margin: 0 auto; }
+.topbar, .card { background: var(--panel); border: 1px solid #1f321f; border-radius: 14px; }
+.topbar { margin: 1rem auto; max-width: 1200px; padding: 0.9rem 1rem; display:flex; align-items:center; justify-content:space-between; }
+.brand { display:flex; align-items:center; gap:.8rem; }
+.logo-mark { width:40px;height:40px;border-radius:50%; background:var(--green); color:#051005; display:grid; place-items:center; font-weight:800; }
+.tag { margin: 0; color: var(--muted); font-size: .85rem; }
+nav a { color: var(--text); margin-left: 1rem; text-decoration:none; }
+nav a:hover { color: var(--green); }
+.grid { display:grid; gap: 1rem; margin-top: 1rem; }
+.two-col { grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); }
+.card { padding: 1rem; }
+.hero { display:grid; gap: 1rem; grid-template-columns: 2fr 1fr; align-items:center; }
+.hero-badge { background: var(--panel-2); padding: 1rem; border-radius: 12px; border: 1px solid #264326; }
+.section-head { display:flex; justify-content:space-between; align-items:center; margin-bottom: .8rem; }
+.list { display:grid; gap: .7rem; }
+.compact { max-height: 260px; overflow: auto; }
+.match, .ticket, .history-item { background: var(--panel-2); border:1px solid #244124; border-radius: 10px; padding: .7rem; }
+.teams { display:flex; justify-content:space-between; margin: .4rem 0; color: var(--muted); }
+.odds-row { display:grid; grid-template-columns:1fr 1fr; gap: .5rem; }
+button, .btn, input {
+  font: inherit;
+}
+input { width:100%; margin-bottom:.5rem; background:#0b140b; color:var(--text); border:1px solid #2b462b; border-radius:8px; padding:.55rem; }
+.btn, button {
+  background:#1a2e1a;
+  color:var(--text);
+  border:1px solid #2c4e2c;
+  border-radius:8px;
+  padding:.5rem .75rem;
+  cursor:pointer;
+}
+.btn:hover, button:hover { border-color: var(--green); }
+.btn.primary { background: linear-gradient(90deg, var(--green-2), var(--green)); color:#051005; border: none; font-weight:700; }
+.btn.subtle { background: transparent; }
+.full { width:100%; }
+.pill { font-size:.75rem; border:1px solid #2c4e2c; border-radius:999px; padding:.2rem .6rem; color:var(--muted); }
+.pill.accent { color: #041004; background: var(--green); border:none; }
+.wallet-stats { list-style:none; margin:0; padding:0; display:grid; gap:.5rem; }
+.wallet-stats li { display:flex; justify-content:space-between; background:var(--panel-2); padding:.6rem; border-radius:8px; }
+.win { color: var(--green); font-weight:700; }
+.loss { color: var(--danger); font-weight:700; }
+.pending { color: #ffd97a; font-weight:700; }
+footer { text-align:center; color:var(--muted); padding:1.5rem; }
+
+.operator-panel {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 60px;
+  background: #040804;
+  border-right: 1px solid #1a2f1a;
+  transition: width .2s ease;
+  overflow: hidden;
+  z-index: 30;
+}
+.operator-panel.open { width: 320px; }
+.operator-toggle {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid #1a2f1a;
+  border-radius: 0;
+  padding: 1rem .6rem;
+  background: #0a140a;
+  color: var(--green);
+  font-weight: 700;
+}
+.operator-content { padding: .9rem; width: 320px; }
+.operator-content h3 { margin-top: .2rem; }
+.operator-content label { font-size:.85rem; color: var(--muted); display:block; margin: .2rem 0; }
+
+#bracketList .matchup {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.5rem;
+  padding:.45rem .6rem;
+  background: #0d180d;
+  border:1px solid #244124;
+  border-radius:8px;
+}
+#leaderboardList .leader { display:flex; justify-content:space-between; padding:.5rem; background:#0d180d; border-radius:8px; border:1px solid #244124; }
+
+@media (max-width: 900px) {
+  main { padding-left: 1rem; }
+  .operator-panel { position: static; width: auto; height: auto; border-right: 0; }
+  .operator-panel.open { width: auto; }
+  .operator-content { width: auto; }
+  .hero { grid-template-columns: 1fr; }
+}
