@@ -20,6 +20,10 @@ const appState = JSON.parse(localStorage.getItem("marshall-betting")) || {
   branding: { title: "Marshall Esports Betting", tagline: "VALORANT · FAKE MONEY LEAGUE" },
   brackets: [],
   leaderboard: DEFAULT_LEADERBOARD
+const appState = JSON.parse(localStorage.getItem("marshall-betting")) || {
+  bankroll: STARTING_BALANCE,
+  pending: [],
+  history: []
 };
 
 const nodes = {
@@ -40,6 +44,7 @@ const nodes = {
   teamAInput: document.getElementById("teamAInput"),
   teamBInput: document.getElementById("teamBInput"),
   leaderboardList: document.getElementById("leaderboardList")
+  stake: document.getElementById("stake")
 };
 
 const currentSlip = [];
@@ -168,6 +173,13 @@ function addPick(pick) {
   const already = currentSlip.find((item) => item.matchId === pick.matchId);
   if (already) Object.assign(already, pick);
   else currentSlip.push(pick);
+function addPick(pick) {
+  const already = currentSlip.find((item) => item.matchId === pick.matchId);
+  if (already) {
+    Object.assign(already, pick);
+  } else {
+    currentSlip.push(pick);
+  }
   renderSlip();
 }
 
@@ -199,6 +211,20 @@ function settleBet(betIndex = null) {
   const payout = didWin ? bet.stake * bet.odds : 0;
 
   appState.bankroll += didWin ? payout - bet.stake : -bet.stake;
+function settleRandomBet() {
+  if (!appState.pending.length) {
+    alert("No pending bets to settle.");
+    return;
+  }
+
+  const selectedIndex = Math.floor(Math.random() * appState.pending.length);
+  const bet = appState.pending.splice(selectedIndex, 1)[0];
+  const didWin = Math.random() > 0.5;
+  const payout = didWin ? bet.stake * bet.odds : 0;
+
+  if (didWin) appState.bankroll += payout - bet.stake;
+  else appState.bankroll -= bet.stake;
+
   appState.history.push({ ...bet, payout, status: didWin ? "win" : "loss", settledAt: Date.now() });
 
   saveState();
@@ -277,6 +303,9 @@ document.getElementById("operatorToggle").addEventListener("click", () => {
 });
 nodes.siteTitleInput.addEventListener("input", updateBranding);
 nodes.taglineInput.addEventListener("input", updateBranding);
+document.getElementById("betForm").addEventListener("submit", placeBet);
+document.getElementById("simulateRound").addEventListener("click", settleRandomBet);
+document.getElementById("clearHistory").addEventListener("click", clearHistory);
 
 renderMatches();
 renderSlip();
