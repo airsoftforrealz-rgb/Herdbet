@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HerdBet — Marshall Valorant Sportsbook</title>
+
+<style>
+:root{
+  --green:#006633; --dark:#0b1220; --panel:#121a2b;
+  --text:#e8eefc; --muted:#94a3b8; --accent:#22c55e;
+}
+*{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+body{margin:0;background:var(--dark);color:var(--text)}
+
+header{background:var(--green);padding:14px 22px;
+ display:flex;justify-content:space-between;align-items:center}
+
+.logo{font-weight:bold;font-size:20px}
+.wallet{background:rgba(0,0,0,.25);padding:6px 12px;border-radius:6px}
+
+main{display:grid;grid-template-columns:1fr 360px;gap:18px;padding:18px}
+.panel{background:var(--panel);border-radius:10px;padding:16px}
+
+.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tab{padding:8px 12px;background:#1e293b;border-radius:6px;cursor:pointer}
+.tab.active{background:var(--accent);color:#000;font-weight:bold}
+.hidden{display:none}
+
+.match{border-bottom:1px solid rgba(255,255,255,.08);padding:14px 0}
+.match:last-child{border-bottom:none}
+.teams{font-weight:bold;margin-bottom:6px}
+.players{font-size:13px;color:var(--muted);margin-bottom:8px}
+
+.odds-row{display:flex;gap:10px}
+.odds-btn{flex:1;background:#1f2937;border:1px solid #334155;
+ border-radius:8px;padding:10px;text-align:center;cursor:pointer}
+.odds-btn:hover{background:#2b3a55}
+.team{font-size:14px}
+.price{color:var(--accent);font-weight:bold}
+
+#betslip ul{padding-left:18px}
+button{background:var(--accent);border:none;padding:8px 12px;
+ border-radius:6px;font-weight:bold;cursor:pointer}
+button.secondary{background:#334155;color:#fff}
+input{width:100%;padding:8px;border-radius:6px;border:none;margin:6px 0}
+
+.admin{margin-top:16px;border-top:1px solid rgba(255,255,255,.1);padding-top:12px}
+.footer{text-align:center;color:var(--muted);margin:20px}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="logo">🐂 HerdBet — Marshall Valorant</div>
+  <div class="wallet">Credits: $<span id="credits">10000</span></div>
+</header>
+
+<main>
+
+<section class="panel">
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('lines')">Match Lines</div>
+    <div class="tab" onclick="showTab('props')">Player Props</div>
+  </div>
+
+  <div id="linesTab">
+
+    <div class="match">
+      <div class="teams">Marshall vs WVU</div>
+      <div class="players">Marshall: Crash, Ace, Volt, Kilo, Shade</div>
+      <div class="players">WVU: Frost, Nova, Blitz, Echo, Raze</div>
+      <div class="odds-row">
+        <div class="odds-btn" onclick="addBet('Marshall ML -165',-165)">
+          <div class="team">Marshall</div>
+          <div class="price">-165</div>
+        </div>
+        <div class="odds-btn" onclick="addBet('WVU ML +140',140)">
+          <div class="team">WVU</div>
+          <div class="price">+140</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin">
+      <h3>Add Match</h3>
+      <input id="teamA" placeholder="Team A">
+      <input id="teamB" placeholder="Team B">
+      <input id="playersA" placeholder="Players A (comma separated)">
+      <input id="playersB" placeholder="Players B (comma separated)">
+      <input id="oddsA" placeholder="Odds A (-150)">
+      <input id="oddsB" placeholder="Odds B (+130)">
+      <button onclick="addMatch()">Add</button>
+    </div>
+
+  </div>
+
+  <div id="propsTab" class="hidden">
+    <div class="match">
+      <div class="teams">Crash — Total Kills Map 1</div>
+      <div class="odds-row">
+        <div class="odds-btn" onclick="addBet('Crash Over 18.5 -110',-110)">
+          <div class="team">Over 18.5</div>
+          <div class="price">-110</div>
+        </div>
+        <div class="odds-btn" onclick="addBet('Crash Under 18.5 -110',-110)">
+          <div class="team">Under 18.5</div>
+          <div class="price">-110</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<aside class="panel" id="betslip">
+  <h2>Bet Slip</h2>
+  <ul id="betList"></ul>
+
+  <label>Bet Amount</label>
+  <input id="betAmount" type="number" value="50">
+
+  <button onclick="placeBet()">Place Bet</button>
+  <button class="secondary" onclick="clearBets()">Clear</button>
+
+  <p id="payout"></p>
+</aside>
+
+</main>
+
+<div class="footer">PLAY MONEY ONLY — For entertainment</div>
+
+<script>
+let bets=[];
+
+function addBet(label,odds){bets.push({label,odds});renderBets();}
+function renderBets(){const ul=document.getElementById('betList');ul.innerHTML='';bets.forEach(b=>{const li=document.createElement('li');li.textContent=b.label;ul.appendChild(li);});}
+function clearBets(){bets=[];renderBets();document.getElementById('payout').textContent='';}
+
+function americanToDecimal(o){return o>0?1+o/100:1+100/Math.abs(o);}
+
+function placeBet(){
+ const amt=Number(betAmount.value);
+ let credits=Number(creditsSpan.textContent);
+ if(amt>credits||amt<=0){alert('Invalid');return}
+ let decimal=bets.reduce((p,b)=>p*americanToDecimal(b.odds),1);
+ const win=(amt*decimal).toFixed(2);
+ credits-=amt;creditsSpan.textContent=credits;
+ payout.textContent=`Potential Payout: $${win}`;
+ clearBets();
+}
+
+const creditsSpan=document.getElementById('credits');
+const payout=document.getElementById('payout');
+
+function showTab(tab){
+ linesTab.classList.toggle('hidden',tab!=='lines');
+ propsTab.classList.toggle('hidden',tab!=='props');
+ document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+ event.target.classList.add('active');
+}
+
+function addMatch(){
+ const a=teamA.value,b=teamB.value,pa=playersA.value,pb=playersB.value,oa=oddsA.value,ob=oddsB.value;
+ if(!a||!b||!oa||!ob)return;
+ const div=document.createElement('div');div.className='match';
+ div.innerHTML=`
+  <div class='teams'>${a} vs ${b}</div>
+  <div class='players'>${a}: ${pa}</div>
+  <div class='players'>${b}: ${pb}</div>
+  <div class='odds-row'>
+   <div class='odds-btn' onclick="addBet('${a} ML ${oa}',${oa})">
+    <div class='team'>${a}</div><div class='price'>${oa}</div>
+   </div>
+   <div class='odds-btn' onclick="addBet('${b} ML ${ob}',${ob})">
+    <div class='team'>${b}</div><div class='price'>${ob}</div>
+   </div>
+  </div>`;
+ linesTab.appendChild(div);
+ teamA.value=teamB.value=playersA.value=playersB.value=oddsA.value=oddsB.value='';
+}
+</script>
+</body>
+</html>
