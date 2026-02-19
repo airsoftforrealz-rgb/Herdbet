@@ -6,6 +6,20 @@ const matches = [
   { id: 3, event: "Campus Valorant Cup", time: "Today 9:15 PM", teamA: "Ares Academy", teamB: "Night Market", oddsA: 2.2, oddsB: 1.65 }
 ];
 
+const DEFAULT_LEADERBOARD = [
+  { name: "You", earnings: 0, wins: 0, bets: 0 },
+  { name: "GreenWave", earnings: 520, wins: 9, bets: 15 },
+  { name: "HerdKing", earnings: 340, wins: 6, bets: 12 },
+  { name: "PlantDefuser", earnings: 120, wins: 4, bets: 9 }
+];
+
+const appState = JSON.parse(localStorage.getItem("marshall-betting")) || {
+  bankroll: STARTING_BALANCE,
+  pending: [],
+  history: [],
+  branding: { title: "Marshall Esports Betting", tagline: "VALORANT · FAKE MONEY LEAGUE" },
+  brackets: [],
+  leaderboard: DEFAULT_LEADERBOARD
 const appState = JSON.parse(localStorage.getItem("marshall-betting")) || {
   bankroll: STARTING_BALANCE,
   pending: [],
@@ -21,6 +35,15 @@ const nodes = {
   walletTotal: document.getElementById("walletTotal"),
   walletPending: document.getElementById("walletPending"),
   walletAvailable: document.getElementById("walletAvailable"),
+  stake: document.getElementById("stake"),
+  siteTitle: document.getElementById("siteTitle"),
+  siteTagline: document.getElementById("siteTagline"),
+  siteTitleInput: document.getElementById("siteTitleInput"),
+  taglineInput: document.getElementById("taglineInput"),
+  bracketList: document.getElementById("bracketList"),
+  teamAInput: document.getElementById("teamAInput"),
+  teamBInput: document.getElementById("teamBInput"),
+  leaderboardList: document.getElementById("leaderboardList")
   stake: document.getElementById("stake")
 };
 
@@ -104,6 +127,52 @@ function renderHistory() {
     : "<p>No settled bets yet.</p>";
 }
 
+function renderBranding() {
+  nodes.siteTitle.textContent = appState.branding.title;
+  nodes.siteTagline.textContent = appState.branding.tagline;
+  nodes.siteTitleInput.value = appState.branding.title;
+  nodes.taglineInput.value = appState.branding.tagline;
+}
+
+function renderBrackets() {
+  nodes.bracketList.innerHTML = appState.brackets.length
+    ? appState.brackets
+        .map(
+          (pair, index) => `<div class="matchup"><span>${pair.a} vs ${pair.b}</span><button data-bracket-win="${index}" data-team="${pair.a}">${pair.a}</button><button data-bracket-win="${index}" data-team="${pair.b}">${pair.b}</button></div>`
+        )
+        .join("")
+    : "<p>No bracket matches yet. Add from operator panel.</p>";
+}
+
+function updateLeaderboardFromHistory() {
+  const me = appState.leaderboard.find((row) => row.name === "You");
+  const wins = appState.history.filter((entry) => entry.status === "win");
+  me.wins = wins.length;
+  me.bets = appState.history.length;
+  me.earnings = Math.round(appState.bankroll - STARTING_BALANCE);
+
+  appState.leaderboard.forEach((row) => {
+    if (row.name !== "You") {
+      row.earnings += Math.floor(Math.random() * 15) - 4;
+    }
+  });
+
+  appState.leaderboard.sort((a, b) => b.earnings - a.earnings);
+}
+
+function renderLeaderboard() {
+  updateLeaderboardFromHistory();
+  nodes.leaderboardList.innerHTML = appState.leaderboard
+    .map(
+      (row, index) => `<div class="leader"><strong>#${index + 1} ${row.name}</strong><span>${currency(row.earnings)} (${row.wins}/${row.bets})</span></div>`
+    )
+    .join("");
+}
+
+function addPick(pick) {
+  const already = currentSlip.find((item) => item.matchId === pick.matchId);
+  if (already) Object.assign(already, pick);
+  else currentSlip.push(pick);
 function addPick(pick) {
   const already = currentSlip.find((item) => item.matchId === pick.matchId);
   if (already) {
@@ -133,6 +202,15 @@ function placeBet(event) {
   renderWallet();
 }
 
+function settleBet(betIndex = null) {
+  if (!appState.pending.length) return alert("No pending bets to settle.");
+
+  const index = betIndex == null ? Math.floor(Math.random() * appState.pending.length) : betIndex;
+  const bet = appState.pending.splice(index, 1)[0];
+  const didWin = Math.random() > 0.5;
+  const payout = didWin ? bet.stake * bet.odds : 0;
+
+  appState.bankroll += didWin ? payout - bet.stake : -bet.stake;
 function settleRandomBet() {
   if (!appState.pending.length) {
     alert("No pending bets to settle.");
@@ -152,12 +230,43 @@ function settleRandomBet() {
   saveState();
   renderWallet();
   renderHistory();
+  renderLeaderboard();
+}
+
+function settleTopEarner() {
+  if (!appState.pending.length) return alert("No pending bets to settle.");
+  const topIndex = appState.pending.reduce((best, bet, i, arr) => (bet.stake * bet.odds > arr[best].stake * arr[best].odds ? i : best), 0);
+  settleBet(topIndex);
 }
 
 function clearHistory() {
   appState.history = [];
   saveState();
   renderHistory();
+  renderLeaderboard();
+}
+
+function updateBranding() {
+  appState.branding.title = nodes.siteTitleInput.value.trim() || "Marshall Esports Betting";
+  appState.branding.tagline = nodes.taglineInput.value.trim() || "VALORANT · FAKE MONEY LEAGUE";
+  renderBranding();
+  saveState();
+}
+
+function addBracketMatch() {
+  const a = nodes.teamAInput.value.trim();
+  const b = nodes.teamBInput.value.trim();
+  if (!a || !b) return alert("Enter both teams for a custom bracket match.");
+  appState.brackets.push({ a, b, winner: null });
+  nodes.teamAInput.value = "";
+  nodes.teamBInput.value = "";
+  saveState();
+  renderBrackets();
+}
+
+function resetApp() {
+  localStorage.removeItem("marshall-betting");
+  location.reload();
 }
 
 nodes.matchList.addEventListener("click", (event) => {
@@ -173,6 +282,27 @@ nodes.slipItems.addEventListener("click", (event) => {
   renderSlip();
 });
 
+nodes.bracketList.addEventListener("click", (event) => {
+  const button = event.target.closest("button[data-bracket-win]");
+  if (!button) return;
+  const matchup = appState.brackets[Number(button.dataset.bracketWin)];
+  matchup.winner = button.dataset.team;
+  alert(`Winner recorded: ${matchup.winner}`);
+  saveState();
+  renderBrackets();
+});
+
+document.getElementById("betForm").addEventListener("submit", placeBet);
+document.getElementById("simulateRound").addEventListener("click", () => settleBet());
+document.getElementById("clearHistory").addEventListener("click", clearHistory);
+document.getElementById("addBracketMatch").addEventListener("click", addBracketMatch);
+document.getElementById("settleTopEarner").addEventListener("click", settleTopEarner);
+document.getElementById("resetApp").addEventListener("click", resetApp);
+document.getElementById("operatorToggle").addEventListener("click", () => {
+  document.getElementById("operatorPanel").classList.toggle("open");
+});
+nodes.siteTitleInput.addEventListener("input", updateBranding);
+nodes.taglineInput.addEventListener("input", updateBranding);
 document.getElementById("betForm").addEventListener("submit", placeBet);
 document.getElementById("simulateRound").addEventListener("click", settleRandomBet);
 document.getElementById("clearHistory").addEventListener("click", clearHistory);
@@ -181,3 +311,7 @@ renderMatches();
 renderSlip();
 renderWallet();
 renderHistory();
+renderBranding();
+renderBrackets();
+renderLeaderboard();
+setInterval(renderLeaderboard, 6000);

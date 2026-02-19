@@ -10,6 +10,30 @@
       href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="styles.css?v=3" />
+  </head>
+  <body>
+    <aside class="operator-panel" id="operatorPanel">
+      <button class="operator-toggle" id="operatorToggle" type="button">Operator</button>
+      <div class="operator-content">
+        <h3>Operator Console</h3>
+        <label for="siteTitleInput">Site title</label>
+        <input id="siteTitleInput" type="text" value="Marshall Esports Betting" />
+
+        <label for="taglineInput">Tagline</label>
+        <input id="taglineInput" type="text" value="VALORANT · FAKE MONEY LEAGUE" />
+
+        <label for="teamAInput">Bracket Team A</label>
+        <input id="teamAInput" type="text" placeholder="Team name" />
+        <label for="teamBInput">Bracket Team B</label>
+        <input id="teamBInput" type="text" placeholder="Team name" />
+        <button class="btn full" id="addBracketMatch" type="button">Add Bracket Match</button>
+
+        <button class="btn primary full" id="settleTopEarner" type="button">Settle Top Pending Bet</button>
+        <button class="btn subtle full" id="resetApp" type="button">Reset Local Data</button>
+      </div>
+    </aside>
+
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -17,6 +41,8 @@
       <div class="brand">
         <div class="logo-mark">M</div>
         <div>
+          <h1 id="siteTitle">Marshall Esports Betting</h1>
+          <p class="tag" id="siteTagline">VALORANT · FAKE MONEY LEAGUE</p>
           <h1>Marshall Esports Betting</h1>
           <p class="tag">VALORANT · FAKE MONEY LEAGUE</p>
         </div>
@@ -24,6 +50,8 @@
       <nav>
         <a href="#matches">Matches</a>
         <a href="#wallet">Wallet</a>
+        <a href="#brackets">Brackets</a>
+        <a href="#leaderboard">Leaderboard</a>
         <a href="#slip">Bet Slip</a>
         <a href="#history">History</a>
       </nav>
@@ -94,6 +122,24 @@
           <div id="historyList" class="list compact"></div>
         </article>
       </section>
+
+      <section class="grid two-col">
+        <article class="card" id="brackets">
+          <div class="section-head">
+            <h3>Custom Brackets</h3>
+            <span class="pill">Operator Managed</span>
+          </div>
+          <div id="bracketList" class="list compact"></div>
+        </article>
+
+        <article class="card" id="leaderboard">
+          <div class="section-head">
+            <h3>Leaderboard</h3>
+            <span class="pill accent">Live Earnings</span>
+          </div>
+          <div id="leaderboardList" class="list compact"></div>
+        </article>
+      </section>
     </main>
 
     <footer>
@@ -103,6 +149,7 @@
       </p>
     </footer>
 
+    <script src="app.js?v=3"></script>
     <script src="app.js"></script>
   </body>
 </html>
