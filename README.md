@@ -1,5 +1,6 @@
 # Marshall Esports Betting (Valorant)
 
+Single-page Valorant fantasy-style betting dashboard inspired by NFL fantasy layout patterns (tabs, cards, leaderboard, matchups).
 Single-page demo betting site built for a Marshall-themed esports project.
 
 ## Stack
@@ -14,6 +15,9 @@ Single-page demo betting site built for a Marshall-themed esports project.
 - Bet slip with multiple picks
 - Simulated match settlement and bankroll updates
 - Local bet history persistence (`localStorage`)
+- Tab-based fantasy dashboard (Overview, Matchups, Players, Leaders, Bets)
+- NFL fantasy-inspired card layout for matchup and player browsing
+- Live fake-credit leaderboard updates with earnings tracking
 - Left-side operator dropdown for branding controls and bet settlement
 - Custom bracket builder with winner recording
 - Auto-refreshing leaderboard based on earnings

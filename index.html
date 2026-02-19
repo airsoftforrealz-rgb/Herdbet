@@ -3,6 +3,106 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marshall Valorant Fantasy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css?v=4" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">M</div>
+        <div>
+          <h1>Marshall Valorant Fantasy</h1>
+          <p>Esports league manager · fake credits only</p>
+        </div>
+      </div>
+      <div class="wallet-chip">Credits: <strong id="credits">10,000</strong></div>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab active" data-tab="overview">Overview</button>
+      <button class="tab" data-tab="matchups">Matchups</button>
+      <button class="tab" data-tab="players">Players</button>
+      <button class="tab" data-tab="leaders">Leaders</button>
+      <button class="tab" data-tab="bets">My Bets</button>
+    </nav>
+
+    <main>
+      <section class="panel active" id="overview">
+        <div class="hero card">
+          <div>
+            <h2>Week 6 · Valorant Fantasy Slate</h2>
+            <p>Build picks like a fantasy lineup: choose teams, place fake-credit wagers, and track rank movement in real-time.</p>
+          </div>
+          <div class="hero-meta">
+            <span>Live Matches</span>
+            <strong id="liveCount">0</strong>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <article class="card stat"><h3>Season Record</h3><p id="record">0W - 0L</p></article>
+          <article class="card stat"><h3>Total Earnings</h3><p id="earnings">$0</p></article>
+          <article class="card stat"><h3>Pending Tickets</h3><p id="pendingCount">0</p></article>
+          <article class="card stat"><h3>Fantasy Rank</h3><p id="rank">#4</p></article>
+        </div>
+      </section>
+
+      <section class="panel" id="matchups">
+        <div class="card">
+          <div class="section-head">
+            <h3>Featured Matchups</h3>
+            <span class="tag">Best-of-3</span>
+          </div>
+          <div id="matchList" class="stack"></div>
+        </div>
+      </section>
+
+      <section class="panel" id="players">
+        <div class="card">
+          <div class="section-head">
+            <h3>Fantasy Impact Players</h3>
+            <span class="tag">Projected MVP</span>
+          </div>
+          <div id="playerList" class="stack"></div>
+        </div>
+      </section>
+
+      <section class="panel" id="leaders">
+        <div class="card">
+          <div class="section-head">
+            <h3>Marshall League Leaderboard</h3>
+            <button id="refreshLeaders" class="btn">Refresh</button>
+          </div>
+          <div id="leaderboard" class="stack"></div>
+        </div>
+      </section>
+
+      <section class="panel" id="bets">
+        <div class="two-col">
+          <article class="card">
+            <div class="section-head"><h3>Bet Slip</h3><span class="tag" id="slipCount">0 picks</span></div>
+            <form id="betForm">
+              <label for="stake">Stake</label>
+              <input id="stake" type="number" min="50" step="50" value="250" required />
+              <div id="slip" class="stack compact"></div>
+              <button class="btn primary" type="submit">Place Ticket</button>
+            </form>
+          </article>
+          <article class="card">
+            <div class="section-head"><h3>Ticket History</h3><button id="simulate" class="btn">Simulate Result</button></div>
+            <div id="history" class="stack compact"></div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js?v=4"></script>
     <title>Marshall Esports Betting | Valorant</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
